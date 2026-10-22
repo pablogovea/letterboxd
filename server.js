@@ -12,7 +12,6 @@ const server = http.createServer((req, res) => {
     res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
     return fs.createReadStream(path.join(__dirname, 'index.html')).pipe(res);
   }
-
   if (req.method === 'POST' && req.url === '/api/event') {
     let body = '';
     req.on('data', chunk => {
@@ -26,7 +25,7 @@ const server = http.createServer((req, res) => {
         const movie = typeof data.movie === 'string' ? data.movie.trim() : '';
         if (!animal || animal.length > 40 || !movie || movie.length > 80) {
           res.writeHead(400, { 'Content-Type': 'application/json' });
-          return res.end(JSON.stringify({ error: 'Completa ambos campos respetando sus longitudes máximas.' }));
+          return res.end(JSON.stringify({ error: 'Completa ambos campos (máximo 40 y 80 caracteres).' }));
         }
         const record = { animal, movie, at: new Date().toISOString() };
         fs.appendFileSync(logFile, JSON.stringify(record) + '\n', { encoding: 'utf8', mode: 0o600 });
@@ -39,9 +38,8 @@ const server = http.createServer((req, res) => {
     });
     return;
   }
-
   res.writeHead(404);
   res.end('Not found');
 });
 
-server.listen(port, host, () => console.log(`Simulación local: http://${host}:${port}`));
+server.listen(port, host, () => console.log(`Servidor local: http://${host}:${port}`));
